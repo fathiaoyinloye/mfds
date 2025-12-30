@@ -26,7 +26,7 @@ public class FuelStation {
     @OneToOne
     private Admin admin;
     @OneToMany
-    @MapKeyColumn(name = "fuelName")
+    @MapKey(name = "name")
     @JoinColumn(name = "fuelStationId")
     private Map<String, Fuel> fuels = new HashMap<>();
     @OneToMany

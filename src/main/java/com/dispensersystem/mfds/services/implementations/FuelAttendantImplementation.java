@@ -9,7 +9,7 @@ import com.dispensersystem.mfds.dtos.response.DispenseFuelByLiterResponse;
 import com.dispensersystem.mfds.exceptions.AmountLessThanPricePerLiterException;
 import com.dispensersystem.mfds.exceptions.FuelDoesNotExistException;
 import com.dispensersystem.mfds.exceptions.InsufficientStockException;
-import com.dispensersystem.mfds.exceptions.LiterCannotBeLessThanZeroException;
+import com.dispensersystem.mfds.exceptions.LiterCannotBeLessThanOneException;
 import com.dispensersystem.mfds.services.interfaces.FuelAttendantService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +28,7 @@ public class FuelAttendantImplementation implements FuelAttendantService {
         validateLiter(dispenseFuelByLiterRequest.getLitersToBeBought());
         validateAvailableLiters(fuel, dispenseFuelByLiterRequest.getLitersToBeBought());
         fuel.setQuantityAvailable(fuel.getQuantityAvailable() - dispenseFuelByLiterRequest.getLitersToBeBought());
+        fuelRepository.save(fuel);
 
         return null;
     }
@@ -67,7 +68,7 @@ public class FuelAttendantImplementation implements FuelAttendantService {
     }
 
     private void validateLiter(double amount){
-        if(amount < 0) throw new LiterCannotBeLessThanZeroException();
+        if(amount < 1) throw new LiterCannotBeLessThanOneException();
     }
 
 }

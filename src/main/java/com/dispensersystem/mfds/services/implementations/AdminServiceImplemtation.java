@@ -55,6 +55,7 @@ public class AdminServiceImplemtation implements AdminService {
     @Override
     public AddFuelResponse addFuel(AddFuelRequest addFuelRequest) {
         if(fuelRepository.findByName(addFuelRequest.getName()) != null) throw new FuelAlreadyExistException();
+        validatePriceAndQuantity(addFuelRequest.getPricePerLiter(), addFuelRequest.getQuantityToBeStocked());
         Fuel fuel = Fuel.builder().name(addFuelRequest.getName()).pricePerLiter(addFuelRequest.getPricePerLiter()).quantityAvailable(addFuelRequest.getQuantityToBeStocked()).build();
         fuelRepository.save(fuel);
         return new AddFuelResponse(fuel.getName(), fuel.getPricePerLiter(), fuel.getQuantityAvailable());
@@ -74,6 +75,10 @@ public class AdminServiceImplemtation implements AdminService {
         fuel.setQuantityAvailable(fuel.getQuantityAvailable() + restockFuelRequest.getQuantityToBeAdded());
         fuelRepository.save(fuel);
         return new RestockFuelResponse(fuel.getName(), fuel.getQuantityAvailable());
+    }
+
+    private void validatePriceAndQuantity(double pricePerLiter, double quantity){
+        if(pricePerLiter < 1 || quantity < 1) throw new LiterOrQuantityCannotBeLessThanOneException();
     }
 
     @Override
