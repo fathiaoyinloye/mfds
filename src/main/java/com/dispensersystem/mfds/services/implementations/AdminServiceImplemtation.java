@@ -2,7 +2,9 @@ package com.dispensersystem.mfds.services.implementations;
 
 import com.dispensersystem.mfds.data.models.Admin;
 import com.dispensersystem.mfds.data.models.Fuel;
+import com.dispensersystem.mfds.data.models.FuelAttendant;
 import com.dispensersystem.mfds.data.repositories.AdminRepository;
+import com.dispensersystem.mfds.data.repositories.FuelAttendantRepository;
 import com.dispensersystem.mfds.data.repositories.FuelRepository;
 import com.dispensersystem.mfds.dtos.request.*;
 import com.dispensersystem.mfds.dtos.response.*;
@@ -12,6 +14,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -20,6 +25,7 @@ public class AdminServiceImplemtation implements AdminService {
     @Getter
     private final AdminRepository adminRepository;
     private final FuelRepository fuelRepository;
+    private final FuelAttendantRepository fuelAttendantRepository;
 
     @Override
     public RegisterAdminResponse registerAdmin(RegisterAdminRequest adminRequest) {
@@ -49,9 +55,9 @@ public class AdminServiceImplemtation implements AdminService {
     @Override
     public AddFuelResponse addFuel(AddFuelRequest addFuelRequest) {
         if(fuelRepository.findByName(addFuelRequest.getName()) != null) throw new FuelAlreadyExistException();
-        Fuel fuel = Fuel.builder().name(addFuelRequest.getName()).pricePerLiter(addFuelRequest.getPricePerLiter()).quantityToBeStocked(addFuelRequest.getQuantityToBeStocked()).build();
+        Fuel fuel = Fuel.builder().name(addFuelRequest.getName()).pricePerLiter(addFuelRequest.getPricePerLiter()).quantityAvailable(addFuelRequest.getQuantityToBeStocked()).build();
         fuelRepository.save(fuel);
-        return new AddFuelResponse(fuel.getName(), fuel.getPricePerLiter(), fuel.getQuantityToBeStocked());
+        return new AddFuelResponse(fuel.getName(), fuel.getPricePerLiter(), fuel.getQuantityAvailable());
     }
 
     @Override
@@ -65,9 +71,38 @@ public class AdminServiceImplemtation implements AdminService {
     @Override
     public RestockFuelResponse restockFuel(RestockFuelRequest restockFuelRequest) {
         Fuel fuel = findFuel(restockFuelRequest.getFuelName());
-        fuel.setQuantityToBeStocked(fuel.getQuantityToBeStocked() + restockFuelRequest.getQuantityToBeAdded());
+        fuel.setQuantityAvailable(fuel.getQuantityAvailable() + restockFuelRequest.getQuantityToBeAdded());
         fuelRepository.save(fuel);
-        return new RestockFuelResponse(fuel.getName(), fuel.getQuantityToBeStocked());
+        return new RestockFuelResponse(fuel.getName(), fuel.getQuantityAvailable());
+    }
+
+    @Override
+    public List<GetAvailableFuelResponse> getAvailableFuel() {
+        List<Fuel> availableFuels = fuelRepository.findAll();
+        List<GetAvailableFuelResponse> responses = new ArrayList<>();
+        for(int count = 0; count < availableFuels.size(); count++){
+            responses.add(new GetAvailableFuelResponse(
+                    availableFuels.get(count).getFuelId(),
+                    availableFuels.get(count).getName(),
+                    availableFuels.get(count).getPricePerLiter(),
+                    availableFuels.get(count).getQuantityAvailable()));
+
+        }
+        return responses;
+    }
+
+    @Override
+    public AddFuelAttendantResponse addFuellAttendant(AddFuelAttendantRequest addFuelAttendentRequest) {
+        FuelAttendant fuelAttendant = FuelAttendant.builder().name(addFuelAttendentRequest.getName()).build();
+        fuelAttendantRepository.save(fuelAttendant);
+        return new AddFuelAttendantResponse(fuelAttendant.getFuelAttendantId(),fuelAttendant.getName());
+    }
+
+    @Override
+    public RemoveFuelAttendantResponse removeFuellAttendant(RemoveFuelAttendantRequest removeFuelAttendentRequest) {
+        FuelAttendant attendant = findFuelAttendant(removeFuelAttendentRequest.getName());
+        fuelAttendantRepository.delete(attendant);
+        return new RemoveFuelAttendantResponse(attendant.getName());
     }
 
     private Fuel findFuel(String fuelName){
@@ -75,6 +110,16 @@ public class AdminServiceImplemtation implements AdminService {
         if(fuel == null) throw new FuelDoesNotExistException();
         return fuel;
     }
+
+    private FuelAttendant findFuelAttendant(String name){
+        FuelAttendant attendant =  fuelAttendantRepository.findByName(name);
+        if(attendant == null) throw new FuelAttendantDoesNotExistException();
+        return attendant;
+    }
+
+
+
+
 
 }
 

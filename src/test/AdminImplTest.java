@@ -1,10 +1,13 @@
 import com.dispensersystem.mfds.MfdsApplication;
+import com.dispensersystem.mfds.data.models.FuelAttendant;
 import com.dispensersystem.mfds.data.repositories.AdminRepository;
+import com.dispensersystem.mfds.data.repositories.FuelAttendantRepository;
 import com.dispensersystem.mfds.data.repositories.FuelRepository;
 import com.dispensersystem.mfds.dtos.request.*;
 import com.dispensersystem.mfds.dtos.response.*;
 import com.dispensersystem.mfds.exceptions.*;
 import com.dispensersystem.mfds.services.implementations.AdminServiceImplemtation;
+import com.dispensersystem.mfds.services.implementations.FuelAttendantImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +16,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = MfdsApplication.class)
-public class AdminTest {
+public class AdminImplTest {
     @Autowired
     private AdminRepository adminRepository;
     @Autowired
     private FuelRepository fuelRepository;
     @Autowired
     private AdminServiceImplemtation adminServiceImplemtation;
+    @Autowired
+    private FuelAttendantRepository fuelAttendantRepository;
+    @Autowired
+    private FuelAttendantImplementation fuelAttendantImplementation;
+
+
     @BeforeEach
     void setUp() {
 
     adminRepository.deleteAll();
     fuelRepository.deleteAll();
+    fuelAttendantRepository.deleteAll();
     }
 
     @Test
@@ -139,5 +149,31 @@ public class AdminTest {
         assertEquals(0, fuelRepository.count());
         assertThrows(FuelDoesNotExistException.class,()-> adminServiceImplemtation.restockFuel(new RestockFuelRequest("Diesel", 30)));
     }
+
+    @Test
+    public void Admin_Registered_AdminCanAddFuelAttendant(){
+        RegisterAdminRequest request = new RegisterAdminRequest("Fathia", "omotemmy", "123");
+        adminServiceImplemtation.registerAdmin(request);
+        AddFuelAttendantRequest AttendantRequest = new AddFuelAttendantRequest("Tolu");
+        AddFuelAttendantResponse response = adminServiceImplemtation.addFuellAttendant(AttendantRequest);
+        assertEquals(1, fuelAttendantRepository.count());
+        assertEquals("Tolu", response.getName());
+        assertNotEquals(0, response.getFuelAttendantId());
+
+    }
+
+    @Test
+    public void Admin_Registered_AdminAddedFuelAttendantTolu_AdminRemoveTolu(){
+        RegisterAdminRequest request = new RegisterAdminRequest("Fathia", "omotemmy", "123");
+        adminServiceImplemtation.registerAdmin(request);
+        AddFuelAttendantRequest AttendantRequest = new AddFuelAttendantRequest("Tolu");
+        AddFuelAttendantResponse response = adminServiceImplemtation.addFuellAttendant(AttendantRequest);
+        assertEquals(1, fuelAttendantRepository.count());
+        assertEquals("Tolu", response.getName());
+        adminServiceImplemtation.removeFuellAttendant(new RemoveFuelAttendantRequest("Tolu"));
+        assertEquals(0, fuelAttendantRepository.count());
+
+    }
+
 
 }

@@ -17,5 +17,5 @@ public class Fuel {
     private Long fuelId;
     private String name;
     private double pricePerLiter;
-    private double quantityToBeStocked;
+    private double quantityAvailable;
 }
