@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "fuelstation")
+@Table(name = "fuel_attendant")
 public class FuelAttendant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

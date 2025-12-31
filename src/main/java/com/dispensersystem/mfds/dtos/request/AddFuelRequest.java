@@ -10,5 +10,5 @@ import lombok.Setter;
 public class AddFuelRequest {
     private String name;
     private double pricePerLiter;
-    private double quantityToBeStocked;
+    private double quantityAvailable;
 }

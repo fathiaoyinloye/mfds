@@ -1,6 +1,9 @@
 package com.dispensersystem.mfds.services.implementations;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.dispensersystem.mfds.data.models.Fuel;
+import com.dispensersystem.mfds.data.models.Receipt;
 import com.dispensersystem.mfds.data.repositories.FuelRepository;
 import com.dispensersystem.mfds.dtos.request.DispenseFuelByLiterRequest;
 import com.dispensersystem.mfds.dtos.request.DispenseFuelByAmountRequest;
@@ -23,7 +26,7 @@ public class FuelAttendantImplementation implements FuelAttendantService {
     private final FuelRepository fuelRepository;
 
     @Override
-    public DispenseFuelByLiterResponse dispenseFuelBYLiter(DispenseFuelByLiterRequest dispenseFuelByLiterRequest) {
+    public DispenseFuelByLiterResponse dispenseFuelByLiter(DispenseFuelByLiterRequest dispenseFuelByLiterRequest) {
         Fuel fuel = findFuel(dispenseFuelByLiterRequest.getFuelName());
         validateLiter(dispenseFuelByLiterRequest.getLitersToBeBought());
         validateAvailableLiters(fuel, dispenseFuelByLiterRequest.getLitersToBeBought());
@@ -71,6 +74,12 @@ public class FuelAttendantImplementation implements FuelAttendantService {
         if(amount < 1) throw new LiterCannotBeLessThanOneException();
     }
 
+
+    private void issueOutReceipt(double price, double pricePerLiter){
+        LocalDate date = LocalDate.now();
+
+        Receipt receipt = Receipt.builder().price(price).
+    }
 }
 
 

@@ -62,7 +62,7 @@ public class FuelAttendantImplementationTest {
         adminServiceImplemtation.addFuel(new AddFuelRequest("Kerosene", 1000, 5));
         assertEquals(5.0, fuelRepository.findByName("Kerosene").getQuantityAvailable());
         assertEquals(1, fuelRepository.count());
-        fuelAttendantImplementation.dispenseFuelBYLiter(new DispenseFuelByLiterRequest("Kerosene", 2.0));
+        fuelAttendantImplementation.dispenseFuelByLiter(new DispenseFuelByLiterRequest("Kerosene", 2.0));
         assertEquals(3.0, fuelRepository.findByName("Kerosene").getQuantityAvailable());
 
     }
@@ -83,7 +83,7 @@ public class FuelAttendantImplementationTest {
         assertEquals(5.0, fuelRepository.findByName("Kerosene").getQuantityAvailable());
         assertEquals(1, fuelRepository.count());
         assertThrows(LiterCannotBeLessThanOneException.class, () ->
-        fuelAttendantImplementation.dispenseFuelBYLiter(new DispenseFuelByLiterRequest("Kerosene", 0.0)));
+        fuelAttendantImplementation.dispenseFuelByLiter(new DispenseFuelByLiterRequest("Kerosene", 0.0)));
         assertEquals(5.0, fuelRepository.findByName("Kerosene").getQuantityAvailable());
 
     }
@@ -93,7 +93,7 @@ public class FuelAttendantImplementationTest {
         assertEquals(3.0, fuelRepository.findByName("Kerosene").getQuantityAvailable());
         assertEquals(1, fuelRepository.count());
         assertThrows(InsufficientStockException.class, () ->
-                fuelAttendantImplementation.dispenseFuelBYLiter(new DispenseFuelByLiterRequest("Kerosene", 5.0)));
+                fuelAttendantImplementation.dispenseFuelByLiter(new DispenseFuelByLiterRequest("Kerosene", 5.0)));
         assertEquals(3.0, fuelRepository.findByName("Kerosene").getQuantityAvailable());
 
     }

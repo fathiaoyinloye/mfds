@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -19,13 +19,13 @@ public class Receipt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String fuelStationName;
     private Long receiptId;
+    private String fuelStationName;
     private String attendantName;
     private  double pricePerLiter;
     private double literBought;
     private double price;
-    private LocalDateTime timeCreated;
+    private String timeCreated;
 
 
 

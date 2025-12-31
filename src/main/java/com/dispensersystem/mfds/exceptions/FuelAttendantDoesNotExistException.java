@@ -2,6 +2,6 @@ package com.dispensersystem.mfds.exceptions;
 
 public class FuelAttendantDoesNotExistException extends MultiFuelDispenserServiceException {
     public FuelAttendantDoesNotExistException() {
-        super("Fuel Attendant Was Never Added");
+        super("Fuel Attendant not In Attendants List");
     }
 }

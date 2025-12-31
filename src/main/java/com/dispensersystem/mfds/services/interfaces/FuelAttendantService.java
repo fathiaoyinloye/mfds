@@ -6,6 +6,6 @@ import com.dispensersystem.mfds.dtos.response.DispenseFuelByAmountResponse;
 import com.dispensersystem.mfds.dtos.response.DispenseFuelByLiterResponse;
 
 public interface FuelAttendantService {
-   DispenseFuelByLiterResponse dispenseFuelBYLiter(DispenseFuelByLiterRequest dispenseFuelBYLiterRequest);
+   DispenseFuelByLiterResponse dispenseFuelByLiter(DispenseFuelByLiterRequest dispenseFuelBYLiterRequest);
    DispenseFuelByAmountResponse dispenseFuelByAmount(DispenseFuelByAmountRequest dispenseFuelByAmountRequest);
 }

@@ -1,5 +1,4 @@
 import com.dispensersystem.mfds.MfdsApplication;
-import com.dispensersystem.mfds.data.models.FuelAttendant;
 import com.dispensersystem.mfds.data.repositories.AdminRepository;
 import com.dispensersystem.mfds.data.repositories.FuelAttendantRepository;
 import com.dispensersystem.mfds.data.repositories.FuelRepository;
@@ -155,7 +154,7 @@ public class AdminImplTest {
         RegisterAdminRequest request = new RegisterAdminRequest("Fathia", "omotemmy", "123");
         adminServiceImplemtation.registerAdmin(request);
         AddFuelAttendantRequest AttendantRequest = new AddFuelAttendantRequest("Tolu");
-        AddFuelAttendantResponse response = adminServiceImplemtation.addFuellAttendant(AttendantRequest);
+        AddFuelAttendantResponse response = adminServiceImplemtation.addFuelAttendant(AttendantRequest);
         assertEquals(1, fuelAttendantRepository.count());
         assertEquals("Tolu", response.getName());
         assertNotEquals(0, response.getFuelAttendantId());
@@ -167,10 +166,10 @@ public class AdminImplTest {
         RegisterAdminRequest request = new RegisterAdminRequest("Fathia", "omotemmy", "123");
         adminServiceImplemtation.registerAdmin(request);
         AddFuelAttendantRequest AttendantRequest = new AddFuelAttendantRequest("Tolu");
-        AddFuelAttendantResponse response = adminServiceImplemtation.addFuellAttendant(AttendantRequest);
+        AddFuelAttendantResponse response = adminServiceImplemtation.addFuelAttendant(AttendantRequest);
         assertEquals(1, fuelAttendantRepository.count());
         assertEquals("Tolu", response.getName());
-        adminServiceImplemtation.removeFuellAttendant(new RemoveFuelAttendantRequest("Tolu"));
+        adminServiceImplemtation.removeFuelAttendant(new RemoveFuelAttendantRequest("Tolu"));
         assertEquals(0, fuelAttendantRepository.count());
 
     }

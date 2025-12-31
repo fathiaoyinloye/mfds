@@ -55,8 +55,8 @@ public class AdminServiceImplemtation implements AdminService {
     @Override
     public AddFuelResponse addFuel(AddFuelRequest addFuelRequest) {
         if(fuelRepository.findByName(addFuelRequest.getName()) != null) throw new FuelAlreadyExistException();
-        validatePriceAndQuantity(addFuelRequest.getPricePerLiter(), addFuelRequest.getQuantityToBeStocked());
-        Fuel fuel = Fuel.builder().name(addFuelRequest.getName()).pricePerLiter(addFuelRequest.getPricePerLiter()).quantityAvailable(addFuelRequest.getQuantityToBeStocked()).build();
+        validatePriceAndQuantity(addFuelRequest.getPricePerLiter(), addFuelRequest.getQuantityAvailable());
+        Fuel fuel = Fuel.builder().name(addFuelRequest.getName()).pricePerLiter(addFuelRequest.getPricePerLiter()).quantityAvailable(addFuelRequest.getQuantityAvailable()).build();
         fuelRepository.save(fuel);
         return new AddFuelResponse(fuel.getName(), fuel.getPricePerLiter(), fuel.getQuantityAvailable());
     }
@@ -64,6 +64,7 @@ public class AdminServiceImplemtation implements AdminService {
     @Override
     public UpdateFuelPriceResponse updateFuelPrice(UpdateFuelPriceRequest updateFuelPriceRequest) {
         Fuel fuel = findFuel(updateFuelPriceRequest.getFuelName());
+        validatePrice(updateFuelPriceRequest.getNewPrice());
         fuel.setPricePerLiter(updateFuelPriceRequest.getNewPrice());
         fuelRepository.save(fuel);
         return new UpdateFuelPriceResponse(fuel.getName(), fuel.getPricePerLiter());
@@ -72,9 +73,24 @@ public class AdminServiceImplemtation implements AdminService {
     @Override
     public RestockFuelResponse restockFuel(RestockFuelRequest restockFuelRequest) {
         Fuel fuel = findFuel(restockFuelRequest.getFuelName());
+        validateQuantity(restockFuelRequest.getQuantityToBeAdded());
         fuel.setQuantityAvailable(fuel.getQuantityAvailable() + restockFuelRequest.getQuantityToBeAdded());
         fuelRepository.save(fuel);
         return new RestockFuelResponse(fuel.getName(), fuel.getQuantityAvailable());
+    }
+    private void validatePrice(double price){
+        if(price < 1) throw new PriceCannotBeLessThanOneException();
+    }
+    private void validateQuantity(double quantity){
+        if(quantity < 1) throw new QuantityCannotBeLessThanOneException();
+
+    }
+
+
+    private Fuel findFuel(String fuelName){
+        Fuel fuel = fuelRepository.findByName(fuelName);
+        if(fuel == null) throw new FuelDoesNotExistException();
+        return fuel;
     }
 
     private void validatePriceAndQuantity(double pricePerLiter, double quantity){
@@ -97,24 +113,22 @@ public class AdminServiceImplemtation implements AdminService {
     }
 
     @Override
-    public AddFuelAttendantResponse addFuellAttendant(AddFuelAttendantRequest addFuelAttendentRequest) {
+    public AddFuelAttendantResponse addFuelAttendant(AddFuelAttendantRequest addFuelAttendentRequest) {
+        if(fuelAttendantRepository.findByName(addFuelAttendentRequest.getName() ) != null) throw new FuelAttendantAlreadyExistException();
+
         FuelAttendant fuelAttendant = FuelAttendant.builder().name(addFuelAttendentRequest.getName()).build();
         fuelAttendantRepository.save(fuelAttendant);
         return new AddFuelAttendantResponse(fuelAttendant.getFuelAttendantId(),fuelAttendant.getName());
     }
 
     @Override
-    public RemoveFuelAttendantResponse removeFuellAttendant(RemoveFuelAttendantRequest removeFuelAttendentRequest) {
-        FuelAttendant attendant = findFuelAttendant(removeFuelAttendentRequest.getName());
+    public RemoveFuelAttendantResponse removeFuelAttendant(RemoveFuelAttendantRequest removeFuelAttendantRequest) {
+        FuelAttendant attendant = findFuelAttendant(removeFuelAttendantRequest.getName());
         fuelAttendantRepository.delete(attendant);
         return new RemoveFuelAttendantResponse(attendant.getName());
     }
 
-    private Fuel findFuel(String fuelName){
-        Fuel fuel = fuelRepository.findByName(fuelName);
-        if(fuel == null) throw new FuelDoesNotExistException();
-        return fuel;
-    }
+
 
     private FuelAttendant findFuelAttendant(String name){
         FuelAttendant attendant =  fuelAttendantRepository.findByName(name);

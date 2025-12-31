@@ -12,7 +12,7 @@ public interface AdminService {
     UpdateFuelPriceResponse updateFuelPrice(UpdateFuelPriceRequest updateFuelPriceReuest);
     RestockFuelResponse restockFuel(RestockFuelRequest restockFuelRequest);
    List<GetAvailableFuelResponse > getAvailableFuel();
-   AddFuelAttendantResponse addFuellAttendant(AddFuelAttendantRequest addFuelAttendentReuest);
-    RemoveFuelAttendantResponse removeFuellAttendant(RemoveFuelAttendantRequest removeFuelAttendentRequest);
+   AddFuelAttendantResponse addFuelAttendant(AddFuelAttendantRequest addFuelAttendentReuest);
+    RemoveFuelAttendantResponse removeFuelAttendant(RemoveFuelAttendantRequest removeFuelAttendentRequest);
 
 }
