@@ -75,11 +75,11 @@ public class FuelAttendantImplementation implements FuelAttendantService {
     }
 
 
-    private void issueOutReceipt(double price, double pricePerLiter){
+    /*private void issueOutReceipt(double price, double pricePerLiter){
         LocalDate date = LocalDate.now();
 
         Receipt receipt = Receipt.builder().price(price).
-    }
+    }*/
 }
 
 
